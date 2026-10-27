@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ms" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAPUR 500 — Koleksi 518 Resipi Ebook Tempatan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">DAPUR 500</h1>
+          <p class="brand-subtitle">Koleksi 518 Resipi Daripada 10 Ebook Masakan Tempatan</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnBookmarksTab" class="action-btn" title="Resipi Disimpan" aria-label="Resipi Disimpan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span class="btn-text">Disimpan</span>
+          <span id="savedCountBadge" class="badge">0</span>
+        </button>
+
+        <button id="themeToggleBtn" class="action-btn icon-only" title="Tukar Tema (Gelap / Cerah)" aria-label="Tukar Tema">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container main-content">
+    <!-- Top Filter Controls -->
+    <section class="controls-panel">
+      <!-- Search Row -->
+      <div class="search-row">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Cari tajuk resipi, bahan (cth: ayam, telur, santan), atau buku..." autocomplete="off">
+          <button id="clearSearchBtn" class="clear-btn" title="Padam carian" aria-label="Padam carian">&times;</button>
+        </div>
+
+        <div class="view-tabs">
+          <button class="view-tab active" data-view="all">Semua Resipi</button>
+          <button class="view-tab" data-view="fridge">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+              <line x1="5" y1="10" x2="19" y2="10"></line>
+              <line x1="10" y1="6" x2="10" y2="8"></line>
+              <line x1="10" y1="14" x2="10" y2="17"></line>
+            </svg>
+            Peti Ais Saya
+          </button>
+          <button class="view-tab" data-view="saved">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+            Kegemaran
+          </button>
+        </div>
+      </div>
+
+      <!-- Peti Ais (Pantry) Box (Collapsible / Toggleable) -->
+      <div id="fridgePanel" class="fridge-panel" style="display: none;">
+        <div class="fridge-header">
+          <div class="fridge-title-block">
+            <h3 class="fridge-title">Peti Ais Saya (Padankan Bahan)</h3>
+            <p class="fridge-desc">Pilih atau taip bahan yang ada di dapur anda untuk mencari resipi yang sesuai.</p>
+          </div>
+          <button id="resetFridgeBtn" class="text-btn">Reset Pilihan</button>
+        </div>
+
+        <div class="pantry-chips-wrap">
+          <div class="pantry-chips" id="pantryChips">
+            <!-- Dynamically populated pantry ingredients -->
+          </div>
+        </div>
+
+        <div class="custom-ingredient-row">
+          <input type="text" id="customIngredientInput" placeholder="Tambah bahan lain (tekan Enter)...">
+          <button id="addCustomIngredientBtn" class="secondary-btn">Tambah</button>
+        </div>
+      </div>
+
+      <!-- Book Filter Pills -->
+      <div class="filter-section">
+        <div class="section-label-row">
+          <span class="filter-label">Pilih Buku Ebook:</span>
+          <span id="activeFiltersSummary" class="filter-summary"></span>
+        </div>
+        <div class="book-chips" id="bookChips">
+          <!-- Populated in JS -->
+        </div>
+      </div>
+
+      <!-- Meal / Category Filter Chips -->
+      <div class="filter-section">
+        <div class="section-label-row">
+          <span class="filter-label">Kategori Makanan:</span>
+        </div>
+        <div class="cat-chips" id="categoryChips">
+          <!-- Populated in JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Meta / Results Bar -->
+    <div class="results-bar">
+      <div class="results-count">
+        Menunjukkan <span id="displayedCount" class="highlight-count">518</span> daripada <span id="totalCount">518</span> resipi
+      </div>
+      <div class="sort-wrapper">
+        <label for="sortSelect">Susunan:</label>
+        <select id="sortSelect">
+          <option value="book">Susunan Buku Asal</option>
+          <option value="alpha">Nama Resipi (A-Z)</option>
+          <option value="fridge-match" disabled>Padanan Peti Ais Tertinggi</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Recipe Grid -->
+    <div id="recipeGrid" class="recipe-grid">
+      <!-- Populated via JS -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
+      </svg>
+      <h3 class="empty-title">Tiada resipi ditemui</h3>
+      <p class="empty-desc">Cuba tukar kata carian atau tetapkan semula penapis buku dan kategori.</p>
+      <button id="resetFiltersBtn" class="primary-btn">Tetapkan Semula Semua Penapis</button>
+    </div>
+
+    <!-- Pagination / Load More -->
+    <div id="loadMoreContainer" class="load-more-container">
+      <button id="loadMoreBtn" class="load-more-btn">
+        Muat Lagi Resipi (<span id="remainingCount">0</span> berbaki)
+      </button>
+    </div>
+  </main>
+
+  <!-- Recipe Detail Modal / Drawer -->
+  <div id="recipeModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-dialog">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-badges">
+            <span id="modalBookBadge" class="book-badge"></span>
+            <span id="modalCatBadge" class="cat-badge"></span>
+            <span id="modalPageBadge" class="page-badge"></span>
+          </div>
+          <h2 id="modalRecipeTitle" class="modal-recipe-title"></h2>
+          <p id="modalRecipeDesc" class="modal-recipe-desc"></p>
+        </div>
+
+        <div class="modal-actions">
+          <button id="modalBookmarkBtn" class="icon-action-btn" title="Simpan Resipi" aria-label="Simpan Resipi">
+            <svg class="heart-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+          <button id="modalCopyBtn" class="icon-action-btn" title="Salin Teks Resipi" aria-label="Salin Teks Resipi">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+          <button id="modalPrintBtn" class="icon-action-btn" title="Cetak / Simpan PDF" aria-label="Cetak Resipi">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+          </button>
+          <button id="modalCloseBtn" class="close-modal-btn" title="Tutup (Esc)" aria-label="Tutup">&times;</button>
+        </div>
+      </div>
+
+      <!-- Modal Tabs (Text vs PDF Viewer) -->
+      <div class="modal-tab-bar">
+        <button id="tabBtnText" class="modal-tab-btn active" data-tab="text">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          Bahan & Cara Memasak
+        </button>
+        <button id="tabBtnPdf" class="modal-tab-btn" data-tab="pdf">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Paparan Ebook Asli (PDF)
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- Text View Content -->
+        <div id="modalTextView" class="tab-pane active">
+          <div class="recipe-columns">
+            <!-- Left: Ingredients Checklist -->
+            <div class="recipe-col ingredients-col">
+              <div class="section-title-wrap">
+                <h3 class="col-title">Bahan-Bahan</h3>
+                <span class="sub-hint">Tandakan bahan yang telah disediakan</span>
+              </div>
+              <ul id="modalIngredientsList" class="checklist">
+                <!-- Populated via JS -->
+              </ul>
+            </div>
+
+            <!-- Right: Instructions & Tips -->
+            <div class="recipe-col instructions-col">
+              <div class="section-title-wrap">
+                <h3 class="col-title">Langkah-Langkah Penyediaan</h3>
+              </div>
+              <ol id="modalStepsList" class="steps-list">
+                <!-- Populated via JS -->
+              </ol>
+
+              <div id="modalTipsWrap" class="tips-box" style="display: none;">
+                <h4 class="tips-title">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  Tip & Petua Masakan:
+                </h4>
+                <div id="modalTipsContent" class="tips-content"></div>
+              </div>
+
+              <div class="pdf-callout">
+                <p>Ingin melihat paparan buku rekaan Canva grafik yang asal?</p>
+                <button id="switchToPdfBtn" class="link-btn">Buka Paparan Ebook Asli &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF View Content -->
+        <div id="modalPdfView" class="tab-pane">
+          <div class="pdf-viewer-bar">
+            <span id="pdfPageIndicator" class="pdf-indicator">Muka surat ...</span>
+            <a id="openFullPdfLink" href="#" target="_blank" rel="noopener noreferrer" class="external-pdf-link">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              Buka PDF Saiz Penuh di Tab Baharu
+            </a>
+          </div>
+          <div class="iframe-container">
+            <iframe id="pdfIframe" src="about:blank" title="Paparan Halaman PDF"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Print Container -->
+  <div id="printContainer" class="print-only"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

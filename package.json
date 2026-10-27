@@ -1,0 +1,19 @@
+{
+  "name": "dapur500",
+  "version": "1.0.0",
+  "description": "DAPUR 500 — Web App Resipi Ebook Masakan Tempatan",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "extract": "node scripts/extract_all.js"
+  },
+  "keywords": [
+    "recipes",
+    "culinary",
+    "resipi",
+    "masakan",
+    "dapur"
+  ],
+  "author": "",
+  "license": "ISC"
+}

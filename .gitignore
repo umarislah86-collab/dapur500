@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Scratch & Extraction scripts
+scripts/
+
+# Bitmap images & temporary files
+*.bmp
+*.log
+.system_generated/
+lowcal_pages/
+
+# OS metadata
+Thumbs.db
+.DS_Store
