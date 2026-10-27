@@ -5,7 +5,7 @@ const os = require('os');
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const PDF_DIR = 'C:/Users/umarosli/Downloads/500 Resipi Combo-20261027T022917Z-1-001/500 Resipi Combo';
+const PDF_DIR = path.join(__dirname, 'pdf');
 
 // MIME types
 const MIME_TYPES = {

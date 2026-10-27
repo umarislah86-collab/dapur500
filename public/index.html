@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -285,17 +286,26 @@
         <div id="modalPdfView" class="tab-pane">
           <div class="pdf-viewer-bar">
             <span id="pdfPageIndicator" class="pdf-indicator">Muka surat ...</span>
-            <a id="openFullPdfLink" href="#" target="_blank" rel="noopener noreferrer" class="external-pdf-link">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-              Buka PDF Saiz Penuh di Tab Baharu
-            </a>
+            <div class="pdf-actions">
+              <button id="pdfZoomOutBtn" class="pdf-tool-btn" title="Kecilkan" aria-label="Kecilkan">−</button>
+              <span id="pdfZoomLevel" style="font-size: 12px; font-weight: 600; min-width: 40px; text-align: center;">100%</span>
+              <button id="pdfZoomInBtn" class="pdf-tool-btn" title="Besarkan" aria-label="Besarkan">+</button>
+              <a id="openFullPdfLink" href="#" target="_blank" rel="noopener noreferrer" class="external-pdf-link">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+                Buka Fail PDF Penuh
+              </a>
+            </div>
           </div>
-          <div class="iframe-container">
-            <iframe id="pdfIframe" src="about:blank" title="Paparan Halaman PDF"></iframe>
+          <div id="pdfCanvasContainer" class="pdf-canvas-container">
+            <div id="pdfLoadingNotice" class="pdf-loading">
+              <div class="spinner"></div>
+              <span>Memuatkan paparan e-book...</span>
+            </div>
+            <canvas id="pdfCanvas"></canvas>
           </div>
         </div>
       </div>

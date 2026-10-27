@@ -76,8 +76,88 @@ document.addEventListener('DOMContentLoaded', () => {
   const switchToPdfBtn = document.getElementById('switchToPdfBtn');
   const pdfPageIndicator = document.getElementById('pdfPageIndicator');
   const openFullPdfLink = document.getElementById('openFullPdfLink');
-  const pdfIframe = document.getElementById('pdfIframe');
+  const pdfCanvas = document.getElementById('pdfCanvas');
+  const pdfCanvasContainer = document.getElementById('pdfCanvasContainer');
+  const pdfLoadingNotice = document.getElementById('pdfLoadingNotice');
+  const pdfZoomInBtn = document.getElementById('pdfZoomInBtn');
+  const pdfZoomOutBtn = document.getElementById('pdfZoomOutBtn');
+  const pdfZoomLevel = document.getElementById('pdfZoomLevel');
   const printContainer = document.getElementById('printContainer');
+
+  // PDF.js State & Cache
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  let currentRenderTask = null;
+  let pdfScale = 1.3;
+  const pdfDocCache = new Map();
+
+  async function loadAndRenderPdfPage(filename, pageNum) {
+    if (!window.pdfjsLib || !pdfCanvas) return;
+
+    pdfLoadingNotice.style.display = 'flex';
+    pdfCanvas.style.display = 'none';
+
+    if (currentRenderTask) {
+      try { currentRenderTask.cancel(); } catch (e) {}
+    }
+
+    try {
+      const pdfUrl = `pdf/${encodeURIComponent(filename)}`;
+      let pdfDoc = pdfDocCache.get(filename);
+      if (!pdfDoc) {
+        pdfDoc = await window.pdfjsLib.getDocument(pdfUrl).promise;
+        pdfDocCache.set(filename, pdfDoc);
+      }
+
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: pdfScale });
+
+      const ctx = pdfCanvas.getContext('2d');
+      pdfCanvas.width = viewport.width;
+      pdfCanvas.height = viewport.height;
+
+      currentRenderTask = page.render({
+        canvasContext: ctx,
+        viewport: viewport
+      });
+
+      await currentRenderTask.promise;
+      pdfLoadingNotice.style.display = 'none';
+      pdfCanvas.style.display = 'block';
+    } catch (err) {
+      if (err.name !== 'RenderingCancelledException') {
+        console.error('PDF render error:', err);
+        pdfLoadingNotice.innerHTML = `
+          <div style="color: #ef4444; font-weight: 600;">Gagal memuatkan paparan PDF</div>
+          <p style="font-size: 13px; margin: 4px 0;">Sila buka terus fail PDF penuh melalui pautan di atas.</p>
+        `;
+      }
+    }
+  }
+
+  // Zoom handlers
+  if (pdfZoomInBtn && pdfZoomOutBtn) {
+    pdfZoomInBtn.addEventListener('click', () => {
+      if (pdfScale < 2.5) {
+        pdfScale += 0.25;
+        pdfZoomLevel.textContent = `${Math.round((pdfScale / 1.3) * 100)}%`;
+        if (state.activeRecipe) {
+          loadAndRenderPdfPage(state.activeRecipe.pdfFilename, state.activeRecipe.page);
+        }
+      }
+    });
+
+    pdfZoomOutBtn.addEventListener('click', () => {
+      if (pdfScale > 0.6) {
+        pdfScale -= 0.25;
+        pdfZoomLevel.textContent = `${Math.round((pdfScale / 1.3) * 100)}%`;
+        if (state.activeRecipe) {
+          loadAndRenderPdfPage(state.activeRecipe.pdfFilename, state.activeRecipe.page);
+        }
+      }
+    });
+  }
 
   // Initialize Theme
   function initTheme() {
@@ -603,27 +683,13 @@ document.addEventListener('DOMContentLoaded', () => {
       modalTipsWrap.style.display = 'none';
     }
 
-    // Setup PDF Iframe
-    const isLocalServer = ['localhost', '127.0.0.1'].includes(window.location.hostname) || window.location.hostname.startsWith('192.168.');
-    if (isLocalServer) {
-      const pdfUrl = `/pdf/${encodeURIComponent(r.pdfFilename)}#page=${r.page}&view=FitH`;
-      pdfIframe.src = pdfUrl;
-      pdfPageIndicator.textContent = `Halaman ${r.page} (${r.pdfFilename})`;
-      openFullPdfLink.href = `/pdf/${encodeURIComponent(r.pdfFilename)}#page=${r.page}`;
-      openFullPdfLink.style.display = 'inline-flex';
-    } else {
-      pdfPageIndicator.textContent = `Sumber: ${r.pdfFilename} (Halaman ${r.page})`;
-      openFullPdfLink.style.display = 'none';
-      pdfIframe.srcdoc = `
-        <body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:90vh;margin:0;background:#18181b;color:#e4e4e7;text-align:center;padding:20px;">
-          <div style="max-width:480px;background:#27272a;padding:24px;border-radius:12px;border:1px solid #3f3f46;">
-            <h3 style="margin-top:0;color:#f59e0b;">📖 Mod Luar Rumah (GitHub Pages)</h3>
-            <p style="font-size:14px;line-height:1.6;color:#d4d4d8;">Fail e-book PDF asal bersaiz 750 MB disimpan pada komputer rumah anda untuk menjimatkan kuota data telefon.</p>
-            <p style="font-size:14px;line-height:1.6;color:#10b981;font-weight:600;">Kesemua 100% sukatan ramuan & panduan memasak lengkap tersedia di tab "Bahan & Cara Memasak" di sebelah!</p>
-          </div>
-        </body>
-      `;
-    }
+    // Setup PDF View Info
+    pdfPageIndicator.textContent = `${r.bookShort || r.bookTitle} — Halaman ${r.page}`;
+    openFullPdfLink.href = `pdf/${encodeURIComponent(r.pdfFilename)}`;
+    openFullPdfLink.title = `Buka atau muat turun ${r.pdfFilename}`;
+
+    pdfScale = 1.3;
+    if (pdfZoomLevel) pdfZoomLevel.textContent = '100%';
 
     // Default tab: show checklist & cooking steps first!
     switchModalTab('text');
@@ -637,7 +703,9 @@ document.addEventListener('DOMContentLoaded', () => {
     recipeModal.classList.remove('open');
     recipeModal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    pdfIframe.src = 'about:blank';
+    if (currentRenderTask) {
+      try { currentRenderTask.cancel(); } catch (e) {}
+    }
     state.activeRecipe = null;
   }
 
@@ -658,6 +726,9 @@ document.addEventListener('DOMContentLoaded', () => {
       tabBtnText.classList.remove('active');
       modalPdfView.classList.add('active');
       modalTextView.classList.remove('active');
+      if (state.activeRecipe) {
+        loadAndRenderPdfPage(state.activeRecipe.pdfFilename, state.activeRecipe.page);
+      }
     }
   }
 
